@@ -359,7 +359,6 @@ function MobileGallery({
 function InfoPanel({
   current,
   active,
-  total,
   setActive,
   resolvedColor,
   handleCTAClick,
