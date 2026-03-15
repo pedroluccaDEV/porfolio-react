@@ -65,7 +65,6 @@ function DocsModal({ isOpen, onClose, content }: { isOpen: boolean; onClose: () 
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            {/* CORRIGIDO: "fileText" em vez de "file-text" */}
             <Icon name="fileText" size={20} color="#ff9d00" />
             <span style={{ fontWeight: 600, color: "var(--text)" }}>Documentação Técnica - AWS Infrastructure</span>
           </div>
@@ -112,16 +111,22 @@ function ProjectPreview({ project, onOpenDocs }: { project: Project; onOpenDocs?
   const resolvedColor = isVar ? "#ff9d00" : color;
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Para o projeto Saphien - mostrar vídeo
+  // Para o projeto Saphien - mostrar vídeo e link
   if (project.title.includes("Saphien")) {
     return (
-      <div
+      <a
+        href="https://landingpage-development.up.railway.app"
+        target="_blank"
+        rel="noopener noreferrer"
         style={{
           width: "100%",
           height: "100%",
           position: "relative",
           overflow: "hidden",
           background: "#0a0a0f",
+          display: "block",
+          textDecoration: "none",
+          cursor: "pointer",
         }}
       >
         {/* Fake browser chrome */}
@@ -211,7 +216,7 @@ function ProjectPreview({ project, onOpenDocs }: { project: Project; onOpenDocs?
         >
           CONCEITO
         </div>
-      </div>
+      </a>
     );
   }
 
@@ -299,7 +304,6 @@ function ProjectPreview({ project, onOpenDocs }: { project: Project; onOpenDocs?
             gap: 6,
           }}
         >
-          {/* CORRIGIDO: "fileText" em vez de "file-text" */}
           <Icon name="fileText" size={12} />
           DOCUMENTAÇÃO
         </button>
@@ -328,16 +332,22 @@ function ProjectPreview({ project, onOpenDocs }: { project: Project; onOpenDocs?
     );
   }
 
-  // Para o projeto do Nubank, mostrar vídeo com borda de navegador
+  // Para o projeto do Nubank, mostrar vídeo com link
   if (project.title.includes("Nubank") || project.title.includes("Landing Page Conceito")) {
     return (
-      <div
+      <a
+        href="https://nubank-landing-rho.vercel.app/"
+        target="_blank"
+        rel="noopener noreferrer"
         style={{
           width: "100%",
           height: "100%",
           position: "relative",
           overflow: "hidden",
           background: "#000",
+          display: "block",
+          textDecoration: "none",
+          cursor: "pointer",
         }}
       >
         {/* Fake browser chrome */}
@@ -406,7 +416,7 @@ function ProjectPreview({ project, onOpenDocs }: { project: Project; onOpenDocs?
         >
           CONCEITO
         </div>
-      </div>
+      </a>
     );
   }
 
@@ -606,6 +616,22 @@ export function Projects() {
 
   const handleCloseDocs = () => {
     setIsModalOpen(false);
+  };
+
+  const handleCTAClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Verifica qual é o projeto atual e redireciona para o link correspondente
+    if (current.title.includes("Saphien")) {
+      window.open("https://landingpage-development.up.railway.app", "_blank", "noopener noreferrer");
+    } else if (current.title.includes("Nubank") || current.title.includes("Landing Page Conceito")) {
+      window.open("https://nubank-landing-rho.vercel.app/", "_blank", "noopener noreferrer");
+    } else if (current.title.includes("Load Balancer") || current.title.includes("Auto Scaling")) {
+      handleOpenDocs(); // Abre o modal de documentação
+    } else {
+      // Para outros projetos, talvez mostrar uma mensagem ou link genérico
+      console.log("Link não disponível para este projeto");
+    }
   };
 
   return (
@@ -900,6 +926,7 @@ export function Projects() {
           >
             <a
               href="#"
+              onClick={handleCTAClick}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -914,6 +941,8 @@ export function Projects() {
                 boxShadow: "0 0 20px rgba(255,107,0,0.3)",
                 transition: "all 0.2s ease",
                 whiteSpace: "nowrap",
+                cursor: "pointer",
+                border: "none",
               }}
               onMouseEnter={(e) => {
                 (e.currentTarget as HTMLAnchorElement).style.filter = "brightness(1.12)";
