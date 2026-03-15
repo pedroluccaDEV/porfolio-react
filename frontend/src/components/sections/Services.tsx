@@ -1,7 +1,16 @@
-// Services.tsx
 import { Icon } from "../ui/Icon";
+import type { IconName } from "../../types"; // Importe o tipo IconName do local correto
 
-const SERVICES = [
+// Defina o tipo para cada serviço
+interface Service {
+  icon: IconName; // Agora icon só pode receber valores válidos do tipo IconName
+  label: string;
+  problem: string;
+  desc: string;
+  chips: string[];
+}
+
+const SERVICES: Service[] = [
   {
     icon: "layers",
     label: "Sistemas Web, Mobile & APIs",
@@ -32,9 +41,12 @@ export function Services() {
         <div style={{ marginBottom: 56 }}>
           <p
             style={{
-              color: "var(--cyan)", fontFamily: "monospace",
-              fontSize: 12, letterSpacing: "0.14em",
-              textTransform: "uppercase", marginBottom: 12,
+              color: "var(--cyan)", 
+              fontFamily: "monospace",
+              fontSize: 12, 
+              letterSpacing: "0.14em",
+              textTransform: "uppercase", 
+              marginBottom: 12,
             }}
           >
             // o que eu faço
@@ -72,9 +84,14 @@ export function Services() {
             >
               <div
                 style={{
-                  position: "absolute", top: 20, right: 24,
-                  fontFamily: "var(--font-display)", fontSize: 64,
-                  color: "rgba(0,229,200,0.05)", lineHeight: 1, userSelect: "none",
+                  position: "absolute", 
+                  top: 20, 
+                  right: 24,
+                  fontFamily: "var(--font-display)", 
+                  fontSize: 64,
+                  color: "rgba(0,229,200,0.05)", 
+                  lineHeight: 1, 
+                  userSelect: "none",
                 }}
               >
                 0{i + 1}
@@ -85,8 +102,11 @@ export function Services() {
               <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 10 }}>{s.label}</h3>
               <p
                 style={{
-                  fontSize: 13, color: "var(--cyan)",
-                  fontStyle: "italic", marginBottom: 12, fontWeight: 300,
+                  fontSize: 13, 
+                  color: "var(--cyan)",
+                  fontStyle: "italic", 
+                  marginBottom: 12, 
+                  fontWeight: 300,
                 }}
               >
                 {s.problem}

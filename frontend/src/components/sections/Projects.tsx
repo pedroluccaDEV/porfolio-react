@@ -65,6 +65,7 @@ function DocsModal({ isOpen, onClose, content }: { isOpen: boolean; onClose: () 
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {/* CORRIGIDO: "fileText" em vez de "file-text" */}
             <Icon name="fileText" size={20} color="#ff9d00" />
             <span style={{ fontWeight: 600, color: "var(--text)" }}>Documentação Técnica - AWS Infrastructure</span>
           </div>
@@ -298,6 +299,7 @@ function ProjectPreview({ project, onOpenDocs }: { project: Project; onOpenDocs?
             gap: 6,
           }}
         >
+          {/* CORRIGIDO: "fileText" em vez de "file-text" */}
           <Icon name="fileText" size={12} />
           DOCUMENTAÇÃO
         </button>
@@ -583,17 +585,14 @@ function getPosition(index: number, active: number, total: number): SlotPosition
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export function Projects() {
   const [active, setActive] = useState<number>(0);
-  const [direction, setDirection] = useState<"left" | "right">("right");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const total = PROJECTS.length;
 
   const prev = useCallback(() => {
-    setDirection("left");
     setActive((a) => (a - 1 + total) % total);
   }, [total]);
 
   const next = useCallback(() => {
-    setDirection("right");
     setActive((a) => (a + 1) % total);
   }, [total]);
 
