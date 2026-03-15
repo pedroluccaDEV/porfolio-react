@@ -14,6 +14,7 @@ export type IconName =
   | "db"
   | "bot"
   | "menu"
+  | "fileText"
   | "x";
 
 export interface ServiceItem {

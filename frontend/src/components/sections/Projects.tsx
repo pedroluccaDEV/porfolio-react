@@ -1,15 +1,414 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Icon } from "../ui/Icon";
-import { PROJECTS, TYPE_COLORS } from "../../constants/projects";
+import { PROJECTS, TYPE_COLORS } from "../../constants/projects/projects";
 import type { Project } from "../../types";
+import nubankVideo from "../../assets/gif-nubank.mp4";
+import saphienVideo from "../../assets/saphien-landing.mp4";
+import awsDocs from "../../constants/projects/EC2-AutoScaling-LoadBalancer/README.md?raw";
+
+// ─── MODAL COMPONENT ─────────────────────────────────────────────────────────
+function DocsModal({ isOpen, onClose, content }: { isOpen: boolean; onClose: () => void; content: string }) {
+  if (!isOpen) return null;
+
+  // Função simples para converter markdown básico para HTML
+  const renderMarkdown = (text: string) => {
+    return text
+      .replace(/^# (.*$)/gm, '<h1 style="font-size:24px; margin:20px 0 10px; color:#ff9d00;">$1</h1>')
+      .replace(/^## (.*$)/gm, '<h2 style="font-size:20px; margin:16px 0 8px; color:#ff9d00;">$1</h2>')
+      .replace(/^### (.*$)/gm, '<h3 style="font-size:16px; margin:12px 0 6px; color:#ff9d00;">$1</h3>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`(.*?)`/g, '<code style="background:rgba(255,150,0,0.1); padding:2px 4px; border-radius:4px;">$1</code>')
+      .replace(/- (.*$)/gm, '<li style="margin-left:20px;">• $1</li>')
+      .replace(/\n\n/g, '<br/><br/>')
+      .replace(/\n/g, '<br/>');
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.85)",
+        backdropFilter: "blur(8px)",
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          width: "90%",
+          maxWidth: 900,
+          maxHeight: "80vh",
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
+          borderRadius: 12,
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {/* Header do Modal */}
+        <div
+          style={{
+            padding: "16px 24px",
+            borderBottom: "1px solid var(--border)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            background: "var(--bg2)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Icon name="fileText" size={20} color="#ff9d00" />
+            <span style={{ fontWeight: 600, color: "var(--text)" }}>Documentação Técnica - AWS Infrastructure</span>
+          </div>
+          <button
+            onClick={onClose}
+            style={{
+              background: "rgba(255,255,255,0.1)",
+              border: "none",
+              borderRadius: 6,
+              width: 32,
+              height: 32,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "var(--text)",
+              fontSize: 18,
+            }}
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Conteúdo do MD */}
+        <div
+          style={{
+            padding: "24px 32px",
+            overflowY: "auto",
+            color: "var(--text)",
+            lineHeight: 1.6,
+            fontSize: 14,
+          }}
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        />
+      </div>
+    </div>
+  );
+}
 
 // ─── PREVIEW PLACEHOLDER ─────────────────────────────────────────────────────
-// Renders a stylized "screenshot" per project type when no real image exists
-function ProjectPreview({ project }: { project: Project }) {
+function ProjectPreview({ project, onOpenDocs }: { project: Project; onOpenDocs?: () => void }) {
   const color = TYPE_COLORS[project.type];
   const isVar = color.startsWith("var");
   const resolvedColor = isVar ? "#ff9d00" : color;
+  const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Para o projeto Saphien - mostrar vídeo
+  if (project.title.includes("Saphien")) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          overflow: "hidden",
+          background: "#0a0a0f",
+        }}
+      >
+        {/* Fake browser chrome */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0, left: 0, right: 0,
+            height: 32,
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(8px)",
+            borderBottom: `1px solid ${resolvedColor}22`,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "0 14px",
+            zIndex: 10,
+          }}
+        >
+          {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+            <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c, opacity: 0.9 }} />
+          ))}
+          <div
+            style={{
+              marginLeft: 10,
+              flex: 1,
+              height: 16,
+              borderRadius: 4,
+              background: "rgba(255,255,255,0.15)",
+              maxWidth: 180,
+            }}
+          />
+        </div>
+
+        {/* Vídeo da Saphien */}
+        <video
+          ref={videoRef}
+          src={saphienVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+
+        {/* Badge "IA Produto" */}
+        <div
+          style={{
+            position: "absolute",
+            top: 42,
+            left: 12,
+            background: "rgba(0,255,200,0.2)",
+            backdropFilter: "blur(4px)",
+            padding: "4px 10px",
+            borderRadius: 20,
+            fontSize: 9,
+            fontWeight: 500,
+            color: "#0ff",
+            border: "1px solid rgba(0,255,200,0.3)",
+            letterSpacing: "0.3px",
+            zIndex: 10,
+          }}
+        >
+          🤖 IA PRODUTO
+        </div>
+
+        {/* Badge "Conceito" */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 12,
+            right: 12,
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(4px)",
+            padding: "4px 10px",
+            borderRadius: 20,
+            fontSize: 9,
+            fontWeight: 500,
+            color: "rgba(255,255,255,0.7)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            letterSpacing: "0.3px",
+            zIndex: 10,
+          }}
+        >
+          CONCEITO
+        </div>
+      </div>
+    );
+  }
+
+  // Para o projeto do Load Balancer AWS
+  if (project.title.includes("Load Balancer") || project.title.includes("Auto Scaling")) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          overflow: "hidden",
+          background: "#232f3e", // Azul escuro da AWS
+        }}
+      >
+        {/* Fake browser chrome */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0, left: 0, right: 0,
+            height: 32,
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(8px)",
+            borderBottom: `1px solid ${resolvedColor}22`,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "0 14px",
+            zIndex: 10,
+          }}
+        >
+          {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+            <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c, opacity: 0.9 }} />
+          ))}
+          <div
+            style={{
+              marginLeft: 10,
+              flex: 1,
+              height: 16,
+              borderRadius: 4,
+              background: "rgba(255,255,255,0.15)",
+              maxWidth: 180,
+            }}
+          />
+        </div>
+
+        {/* Imagem representativa da AWS/Cloud */}
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "linear-gradient(145deg, #1a2b3c, #0f1a24)",
+          }}
+        >
+          <div style={{ textAlign: "center", color: "rgba(255,255,255,0.8)" }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>☁️</div>
+            <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 4 }}>AWS Infrastructure</div>
+            <div style={{ fontSize: 10, opacity: 0.6 }}>Auto Scaling • Load Balancer</div>
+          </div>
+        </div>
+
+        {/* Botão para abrir documentação */}
+        <button
+          onClick={onOpenDocs}
+          style={{
+            position: "absolute",
+            bottom: 12,
+            right: 12,
+            background: "rgba(255,150,0,0.9)",
+            backdropFilter: "blur(4px)",
+            padding: "6px 12px",
+            borderRadius: 20,
+            fontSize: 10,
+            fontWeight: 600,
+            color: "#0a0500",
+            border: "none",
+            letterSpacing: "0.3px",
+            zIndex: 10,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+          }}
+        >
+          <Icon name="fileText" size={12} />
+          DOCUMENTAÇÃO
+        </button>
+
+        {/* Badge "Produção" */}
+        <div
+          style={{
+            position: "absolute",
+            top: 42,
+            left: 12,
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(4px)",
+            padding: "4px 10px",
+            borderRadius: 20,
+            fontSize: 9,
+            fontWeight: 500,
+            color: "#ff9d00",
+            border: "1px solid rgba(255,150,0,0.3)",
+            letterSpacing: "0.3px",
+            zIndex: 10,
+          }}
+        >
+          🚀 EM PRODUÇÃO
+        </div>
+      </div>
+    );
+  }
+
+  // Para o projeto do Nubank, mostrar vídeo com borda de navegador
+  if (project.title.includes("Nubank") || project.title.includes("Landing Page Conceito")) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "relative",
+          overflow: "hidden",
+          background: "#000",
+        }}
+      >
+        {/* Fake browser chrome */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0, left: 0, right: 0,
+            height: 32,
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(8px)",
+            borderBottom: `1px solid ${resolvedColor}22`,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "0 14px",
+            zIndex: 10,
+          }}
+        >
+          {["#ff5f57", "#febc2e", "#28c840"].map((c) => (
+            <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c, opacity: 0.9 }} />
+          ))}
+          <div
+            style={{
+              marginLeft: 10,
+              flex: 1,
+              height: 16,
+              borderRadius: 4,
+              background: "rgba(255,255,255,0.15)",
+              maxWidth: 180,
+            }}
+          />
+        </div>
+
+        {/* Vídeo */}
+        <video
+          ref={videoRef}
+          src={nubankVideo}
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+
+        {/* Badge "Conceito" */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 12,
+            right: 12,
+            background: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(4px)",
+            padding: "4px 10px",
+            borderRadius: 20,
+            fontSize: 9,
+            fontWeight: 500,
+            color: "rgba(255,255,255,0.7)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            letterSpacing: "0.3px",
+            zIndex: 10,
+          }}
+        >
+          CONCEITO
+        </div>
+      </div>
+    );
+  }
+
+  // Para os outros projetos, manter o placeholder estilizado
   return (
     <div
       style={{
@@ -185,6 +584,7 @@ function getPosition(index: number, active: number, total: number): SlotPosition
 export function Projects() {
   const [active, setActive] = useState<number>(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const total = PROJECTS.length;
 
   const prev = useCallback(() => {
@@ -200,6 +600,14 @@ export function Projects() {
   const current = PROJECTS[active];
   const color = TYPE_COLORS[current.type];
   const resolvedColor = color.startsWith("var") ? "#ff9d00" : color;
+
+  const handleOpenDocs = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseDocs = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <section
@@ -320,7 +728,10 @@ export function Projects() {
                     transition: "border-color 0.5s ease, box-shadow 0.5s ease",
                   }}
                 >
-                  <ProjectPreview project={p} />
+                  <ProjectPreview 
+                    project={p} 
+                    onOpenDocs={p.title.includes("Load Balancer") ? handleOpenDocs : undefined}
+                  />
                 </div>
               </div>
             );
@@ -546,6 +957,13 @@ export function Projects() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Documentação */}
+      <DocsModal 
+        isOpen={isModalOpen} 
+        onClose={handleCloseDocs} 
+        content={awsDocs}
+      />
     </section>
   );
 }

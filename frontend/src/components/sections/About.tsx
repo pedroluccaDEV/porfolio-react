@@ -1,4 +1,5 @@
 import { Icon } from "../ui/Icon";
+import fotoPerfil from "../../assets/foto-porfolio.jfif"; // Ajuste o nome do arquivo se necessário
 
 export function About() {
   return (
@@ -8,43 +9,55 @@ export function About() {
           <div style={{ position: "relative" }}>
             <div
               style={{
-                width: "100%", paddingBottom: "100%",
-                background: "var(--surface)", border: "1px solid var(--border)",
-                borderRadius: 12, position: "relative",
+                width: "100%", 
+                paddingBottom: "100%",
+                background: "var(--surface)", 
+                border: "1px solid var(--border)",
+                borderRadius: 12, 
+                position: "relative",
+                overflow: "hidden", // Garante que a imagem respeite as bordas arredondadas
               }}
             >
+              {/* Imagem de perfil */}
+              <img
+                src={fotoPerfil}
+                alt="Pedro Lucca - Desenvolvedor Full Stack"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover", // Faz a imagem cobrir todo o espaço sem distorcer
+                  objectPosition: "center", // Centraliza a imagem
+                }}
+              />
+              
+              {/* Overlay sutil para dar profundidade (opcional) */}
               <div
                 style={{
-                  position: "absolute", inset: 0,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  flexDirection: "column", gap: 8,
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(145deg, rgba(255,107,0,0.05) 0%, transparent 70%)",
+                  pointerEvents: "none",
                 }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-display)", fontSize: 72,
-                    background: "linear-gradient(135deg, #a78bfa, #818cf8)",
-                    WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  DEV
-                </div>
-                <div
-                  style={{
-                    fontSize: 12, color: "var(--muted)",
-                    letterSpacing: "0.2em", textTransform: "uppercase",
-                  }}
-                >
-                  Curitiba, PR
-                </div>
-              </div>
+              />
             </div>
+            
+            {/* Badge de localização */}
             <div
               style={{
-                position: "absolute", bottom: -16, right: -16,
-                background: "var(--surface)", border: "1px solid var(--cyan)",
-                borderRadius: 8, padding: "12px 18px",
-                display: "flex", alignItems: "center", gap: 10,
+                position: "absolute", 
+                bottom: -16, 
+                right: -16,
+                background: "var(--surface)", 
+                border: "1px solid var(--cyan)",
+                borderRadius: 8, 
+                padding: "12px 18px",
+                display: "flex", 
+                alignItems: "center", 
+                gap: 10,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+                backdropFilter: "blur(4px)",
               }}
             >
               <div
@@ -52,7 +65,7 @@ export function About() {
                 style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e" }}
               />
               <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text)" }}>
-                Disponível agora
+                Curitiba, PR
               </span>
             </div>
           </div>
@@ -60,9 +73,12 @@ export function About() {
           <div>
             <p
               style={{
-                color: "var(--cyan)", fontFamily: "monospace",
-                fontSize: 12, letterSpacing: "0.14em",
-                textTransform: "uppercase", marginBottom: 12,
+                color: "var(--cyan)", 
+                fontFamily: "monospace",
+                fontSize: 12, 
+                letterSpacing: "0.14em",
+                textTransform: "uppercase", 
+                marginBottom: 12,
               }}
             >
               // sobre
@@ -71,7 +87,8 @@ export function About() {
               style={{
                 fontFamily: "var(--font-display)",
                 fontSize: "clamp(28px, 3vw, 44px)",
-                lineHeight: 1.05, marginBottom: 20,
+                lineHeight: 1.05, 
+                marginBottom: 20,
               }}
             >
               MAIS QUE UM DEV.

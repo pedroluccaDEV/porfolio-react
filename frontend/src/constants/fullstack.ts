@@ -1,4 +1,4 @@
-import type { StackCategory } from "../types";
+
 
 export interface StackItem {
   name: string;

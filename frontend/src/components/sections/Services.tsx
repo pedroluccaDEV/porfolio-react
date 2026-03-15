@@ -1,5 +1,29 @@
+// Services.tsx
 import { Icon } from "../ui/Icon";
-import { SERVICES } from "../../constants/services";
+
+const SERVICES = [
+  {
+    icon: "layers",
+    label: "Sistemas Web, Mobile & APIs",
+    problem: "Você precisa de um produto que funcione de verdade — não de um MVP frágil.",
+    desc: "Desenvolvo soluções completas de ponta a ponta: da interface que o usuário toca até a infraestrutura que sustenta tudo. Arquitetura, banco de dados, nuvem, versionamento — cada camada pensada para escalar e durar.",
+    chips: ["Interface", "Back-end", "Banco de dados", "Nuvem", "Arquitetura", "CI/CD"],
+  },
+  {
+    icon: "bot",
+    label: "Agentes & IA Aplicada",
+    problem: "IA só tem valor quando resolve um problema real no seu negócio.",
+    desc: "Construo agentes e automações inteligentes integradas diretamente ao seu sistema — seja para processos internos como geração de documentos, agendamentos e triagem, seja para interação direta com o usuário executando tarefas de forma autônoma. LLMs como ferramenta, não como vitrine.",
+    chips: ["Agentes autônomos", "Processos internos", "Interação com usuário", "LLMs na prática"],
+  },
+  {
+    icon: "zap",
+    label: "Automação & Integração",
+    problem: "Trabalho manual que se repete é custo escondido.",
+    desc: "Conecto sistemas, elimino gargalos operacionais e automatizo fluxos que consomem tempo sem agregar valor. Integrações entre plataformas, pipelines de dados e processos que simplesmente rodam — sem intervenção humana.",
+    chips: ["Integração de sistemas", "Pipelines", "Eliminação de gargalos", "Fluxos automáticos"],
+  },
+];
 
 export function Services() {
   return (
