@@ -1,3 +1,4 @@
+// Footer.tsx
 export function Footer() {
   return (
     <footer
@@ -17,7 +18,7 @@ export function Footer() {
           gap: 12,
         }}
       >
-        <span style={{ fontFamily: "monospace", fontSize: 13, color: "var(--muted)" }}>
+        <span style={{ fontFamily: "monospace", fontSize: "clamp(11px, 3vw, 13px)", color: "var(--muted)" }}>
           © {new Date().getFullYear()} —{" "}
           <span
             style={{
@@ -28,10 +29,10 @@ export function Footer() {
               fontWeight: 600,
             }}
           >
-            &lt;Pedro Lucca Gonçalves de Araujo /&gt;
+            &lt;Pedro Lucca /&gt;
           </span>
         </span>
-        <span style={{ fontSize: 12, color: "var(--muted)" }}>
+        <span style={{ fontSize: "clamp(11px, 2.8vw, 12px)", color: "var(--muted)" }}>
           Curitiba, PR · Disponível para projetos remotos
         </span>
       </div>

@@ -59,9 +59,9 @@ function StackCard({
         boxShadow: isActive ? "0 0 28px rgba(255,107,0,0.09)" : "none",
         width: "100%",
         textAlign: "left",
+        boxSizing: "border-box",
       }}
     >
-      {/* Top row */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
           <span style={{ color: isActive ? "#ff7a00" : "rgba(255,120,0,0.40)" }}>
@@ -91,8 +91,6 @@ function StackCard({
           <Icon name="arrow" size={13} />
         </span>
       </div>
-
-      {/* Expert pills preview */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
         {expertItems.map((item) => (
           <span
@@ -126,7 +124,7 @@ function DetailPanel({ cat }: { cat: RichStackCategory }) {
   return (
     <div
       style={{
-        padding: "28px 32px",
+        padding: "clamp(18px, 4vw, 28px) clamp(16px, 4vw, 32px)",
         background: "linear-gradient(145deg, rgba(255,107,0,0.06), rgba(255,179,64,0.025))",
         border: "1px solid rgba(255,120,0,0.22)",
         borderRadius: 12,
@@ -134,9 +132,9 @@ function DetailPanel({ cat }: { cat: RichStackCategory }) {
         flexDirection: "column",
         gap: 22,
         boxShadow: "0 4px 48px rgba(255,107,0,0.07)",
-        minHeight: 380,
-        height: "100%",
+        minHeight: 320,
         width: "100%",
+        boxSizing: "border-box",
       }}
     >
       {/* Header */}
@@ -153,6 +151,7 @@ function DetailPanel({ cat }: { cat: RichStackCategory }) {
               alignItems: "center",
               justifyContent: "center",
               color: "#ff7a00",
+              flexShrink: 0,
             }}
           >
             <Icon name={cat.icon as any} size={18} />
@@ -161,7 +160,7 @@ function DetailPanel({ cat }: { cat: RichStackCategory }) {
             <h3
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: 26,
+                fontSize: "clamp(20px, 4vw, 26px)",
                 color: "var(--text)",
                 letterSpacing: "0.03em",
                 lineHeight: 1,
@@ -174,12 +173,11 @@ function DetailPanel({ cat }: { cat: RichStackCategory }) {
             </p>
           </div>
         </div>
-        <p style={{ fontSize: 13.5, color: "var(--muted)", lineHeight: 1.65, marginTop: 4 }}>
+        <p style={{ fontSize: "clamp(13px, 3vw, 13.5px)", color: "var(--muted)", lineHeight: 1.65, marginTop: 4 }}>
           {cat.desc}
         </p>
       </div>
 
-      {/* Thin divider */}
       <div style={{ height: 1, background: "rgba(255,120,0,0.09)" }} />
 
       {/* Items by level */}
@@ -189,15 +187,7 @@ function DetailPanel({ cat }: { cat: RichStackCategory }) {
           if (!group.length) return null;
           return (
             <div key={level}>
-              {/* Level header */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  marginBottom: 10,
-                }}
-              >
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                 <LevelDot level={level} />
                 <span
                   style={{
@@ -210,24 +200,16 @@ function DetailPanel({ cat }: { cat: RichStackCategory }) {
                 >
                   {LEVEL_LABEL[level]}
                 </span>
-                <span
-                  style={{
-                    fontSize: 10,
-                    color: "rgba(200,160,100,0.3)",
-                    marginLeft: 2,
-                  }}
-                >
+                <span style={{ fontSize: 10, color: "rgba(200,160,100,0.3)", marginLeft: 2 }}>
                   — {group.length} itens
                 </span>
               </div>
-
-              {/* Pills */}
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {group.map((item) => (
                   <span
                     key={item.name}
                     style={{
-                      fontSize: 13,
+                      fontSize: "clamp(11px, 2.5vw, 13px)",
                       padding: "5px 13px",
                       borderRadius: 5,
                       background: `${LEVEL_COLOR[level]}10`,
@@ -339,8 +321,7 @@ function ExperienceTimeline() {
                   width: 1,
                   flex: 1,
                   minHeight: 24,
-                  background:
-                    "linear-gradient(to bottom, rgba(255,122,0,0.35), rgba(255,122,0,0.07))",
+                  background: "linear-gradient(to bottom, rgba(255,122,0,0.35), rgba(255,122,0,0.07))",
                   margin: "4px 0",
                 }}
               />
@@ -348,7 +329,7 @@ function ExperienceTimeline() {
           </div>
 
           {/* Content */}
-          <div style={{ paddingBottom: i < EXPERIENCES.length - 1 ? 28 : 0, flex: 1 }}>
+          <div style={{ paddingBottom: i < EXPERIENCES.length - 1 ? 28 : 0, flex: 1, minWidth: 0 }}>
             <div
               style={{
                 display: "flex",
@@ -358,7 +339,7 @@ function ExperienceTimeline() {
                 marginBottom: 4,
               }}
             >
-              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text)" }}>
+              <span style={{ fontSize: "clamp(13px, 3vw, 14px)", fontWeight: 600, color: "var(--text)" }}>
                 {exp.role}
               </span>
               <span
@@ -372,18 +353,15 @@ function ExperienceTimeline() {
                   border: "1px solid rgba(255,120,0,0.20)",
                   padding: "2px 7px",
                   borderRadius: 3,
+                  whiteSpace: "nowrap",
                 }}
               >
                 {exp.type}
               </span>
             </div>
-            <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 10 }}>
-              <span style={{ fontSize: 13, color: "#ffb340", fontWeight: 500 }}>
-                {exp.company}
-              </span>
-              <span style={{ fontSize: 11, color: "var(--muted)", fontFamily: "monospace" }}>
-                {exp.period}
-              </span>
+            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", marginBottom: 10 }}>
+              <span style={{ fontSize: 13, color: "#ffb340", fontWeight: 500 }}>{exp.company}</span>
+              <span style={{ fontSize: 11, color: "var(--muted)", fontFamily: "monospace" }}>{exp.period}</span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
               {exp.highlights.map((h) => (
@@ -399,7 +377,7 @@ function ExperienceTimeline() {
                   >
                     ▸
                   </span>
-                  <span style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.55 }}>
+                  <span style={{ fontSize: "clamp(12px, 3vw, 13px)", color: "var(--muted)", lineHeight: 1.55 }}>
                     {h}
                   </span>
                 </div>
@@ -426,12 +404,13 @@ export function FullStack() {
       }}
     >
       <div className="container">
+
         {/* ── Header row ─────────────────────────────────────────────── */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 64,
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "clamp(32px, 6vw, 64px)",
             alignItems: "start",
             marginBottom: 64,
           }}
@@ -453,7 +432,7 @@ export function FullStack() {
             <h2
               style={{
                 fontFamily: "var(--font-display)",
-                fontSize: "clamp(32px, 4vw, 52px)",
+                fontSize: "clamp(28px, 5vw, 52px)",
                 lineHeight: 1.05,
                 marginBottom: 20,
               }}
@@ -479,6 +458,7 @@ export function FullStack() {
                 lineHeight: 1.7,
                 marginBottom: 28,
                 fontWeight: 300,
+                fontSize: "clamp(14px, 3.5vw, 16px)",
               }}
             >
               React, Vue, Angular, FastAPI, Node.js — em produção, não em tutorial.
@@ -498,7 +478,7 @@ export function FullStack() {
                   >
                     <Icon name="check" size={14} />
                   </span>
-                  <span style={{ fontSize: 13.5, color: "var(--muted)", lineHeight: 1.55 }}>
+                  <span style={{ fontSize: "clamp(13px, 3vw, 13.5px)", color: "var(--muted)", lineHeight: 1.55 }}>
                     {item}
                   </span>
                 </div>
@@ -553,23 +533,21 @@ export function FullStack() {
           </div>
         </div>
 
-        {/* ── CONTAINER PRINCIPAL COM FLEXBOX ── */}
+        {/* ── Stack explorer ──────────────────────────────────────────── */}
+        {/* Mobile: empilhado. Desktop: sidebar + painel lado a lado */}
         <div
           style={{
             display: "flex",
-            flexDirection: "row",
-            gap: "40px",
-            alignItems: "flex-start",
-            width: "100%",
+            flexDirection: "column",
+            gap: 8,
           }}
         >
-          {/* Sidebar - cards de navegação (largura fixa) */}
+          {/* Cards de navegação — em desktop ficam numa row acima do painel */}
           <div
             style={{
-              flex: "0 0 300px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+              gap: 8,
             }}
           >
             {FS_STACK.map((cat, i) => (
@@ -582,19 +560,12 @@ export function FullStack() {
             ))}
           </div>
 
-          {/* Espaço visual entre as colunas */}
-          <div style={{ width: "40px", flexShrink: 0 }} />
-
-          {/* Detail panel - à direita (ocupa o resto) */}
-          <div
-            style={{
-              flex: "1 1 auto",
-              minWidth: 0,
-            }}
-          >
+          {/* Detail panel — sempre abaixo dos cards */}
+          <div style={{ marginTop: 8 }}>
             <DetailPanel cat={FS_STACK[activeIdx]} />
           </div>
         </div>
+
       </div>
     </section>
   );

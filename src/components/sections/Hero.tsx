@@ -3,72 +3,21 @@ import { Icon } from "../ui/Icon";
 import { TypedText } from "../ui/TypedText";
 import { STATS } from "../../constants/contact";
 
-// ─── BLOB CONFIG ──────────────────────────────────────────────────────────────
 const BLOBS = [
-  {
-    w: 600, h: 600,
-    left: "62%", top: "25%",
-    blur: 110, dur: 14, delay: 0,
-    color: "rgba(251,146,0,0.18)",
-    colorMid: "rgba(255,107,0,0.10)",
-  },
-  {
-    w: 380, h: 380,
-    left: "72%", top: "-12%",
-    blur: 72, dur: 9, delay: -3.5,
-    color: "rgba(255,80,0,0.26)",
-    colorMid: "rgba(255,60,0,0.12)",
-  },
-  {
-    w: 320, h: 320,
-    left: "-6%", top: "38%",
-    blur: 80, dur: 16, delay: -6,
-    color: "rgba(255,170,0,0.16)",
-    colorMid: "rgba(255,140,0,0.08)",
-  },
-  {
-    w: 220, h: 220,
-    left: "36%", top: "-8%",
-    blur: 55, dur: 11, delay: -2,
-    color: "rgba(255,110,0,0.28)",
-    colorMid: "rgba(255,90,0,0.12)",
-  },
-  {
-    w: 160, h: 160,
-    left: "4%", top: "70%",
-    blur: 40, dur: 12, delay: -5,
-    color: "rgba(255,55,0,0.20)",
-    colorMid: "rgba(255,40,0,0.09)",
-  },
-  {
-    w: 480, h: 480,
-    left: "28%", top: "58%",
-    blur: 120, dur: 18, delay: -8,
-    color: "rgba(255,145,0,0.10)",
-    colorMid: "rgba(255,120,0,0.05)",
-  },
+  { w: 600, h: 600, left: "62%", top: "25%", blur: 110, dur: 14, delay: 0, color: "rgba(251,146,0,0.18)", colorMid: "rgba(255,107,0,0.10)" },
+  { w: 380, h: 380, left: "72%", top: "-12%", blur: 72, dur: 9, delay: -3.5, color: "rgba(255,80,0,0.26)", colorMid: "rgba(255,60,0,0.12)" },
+  { w: 320, h: 320, left: "-6%", top: "38%", blur: 80, dur: 16, delay: -6, color: "rgba(255,170,0,0.16)", colorMid: "rgba(255,140,0,0.08)" },
+  { w: 220, h: 220, left: "36%", top: "-8%", blur: 55, dur: 11, delay: -2, color: "rgba(255,110,0,0.28)", colorMid: "rgba(255,90,0,0.12)" },
+  { w: 160, h: 160, left: "4%", top: "70%", blur: 40, dur: 12, delay: -5, color: "rgba(255,55,0,0.20)", colorMid: "rgba(255,40,0,0.09)" },
+  { w: 480, h: 480, left: "28%", top: "58%", blur: 120, dur: 18, delay: -8, color: "rgba(255,145,0,0.10)", colorMid: "rgba(255,120,0,0.05)" },
 ] as const;
 
-// Três variações de movimento para os blobs - OTIMIZADAS (usando translate3d para GPU)
 const KEYFRAMES = `
-  @keyframes bd0 {
-    0%   { transform: translate3d(-20px, 14px, 0) scale(1.00); }
-    50%  { transform: translate3d(10px, -20px, 0) scale(1.04); }
-    100% { transform: translate3d(24px, -8px, 0) scale(0.97); }
-  }
-  @keyframes bd1 {
-    0%   { transform: translate3d(16px, -12px, 0) scale(1.02); }
-    50%  { transform: translate3d(-22px, 8px, 0) scale(0.97); }
-    100% { transform: translate3d(-10px, 20px, 0) scale(1.04); }
-  }
-  @keyframes bd2 {
-    0%   { transform: translate3d(-12px, -22px, 0) scale(0.98); }
-    50%  { transform: translate3d(18px, 10px, 0) scale(1.03); }
-    100% { transform: translate3d(8px, 18px, 0) scale(1.00); }
-  }
+  @keyframes bd0 { 0%{transform:translate3d(-20px,14px,0) scale(1.00)} 50%{transform:translate3d(10px,-20px,0) scale(1.04)} 100%{transform:translate3d(24px,-8px,0) scale(0.97)} }
+  @keyframes bd1 { 0%{transform:translate3d(16px,-12px,0) scale(1.02)} 50%{transform:translate3d(-22px,8px,0) scale(0.97)} 100%{transform:translate3d(-10px,20px,0) scale(1.04)} }
+  @keyframes bd2 { 0%{transform:translate3d(-12px,-22px,0) scale(0.98)} 50%{transform:translate3d(18px,10px,0) scale(1.03)} 100%{transform:translate3d(8px,18px,0) scale(1.00)} }
 `;
 
-// ─── INJECT KEYFRAMES (uma vez, sem JSX <style>) ──────────────────────────────
 let injected = false;
 function injectKeyframes() {
   if (injected || typeof document === "undefined") return;
@@ -78,37 +27,24 @@ function injectKeyframes() {
   document.head.appendChild(el);
 }
 
-// ─── LIQUID BLOBS ─────────────────────────────────────────────────────────────
 const LiquidBlobs = memo(function LiquidBlobs() {
   injectKeyframes();
-
   return (
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        pointerEvents: "none",
-        zIndex: 0,
-        overflow: "hidden", // Garante que nada vaze
-      }}
-    >
+    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
       {BLOBS.map((b, i) => (
         <div
           key={i}
           style={{
             position: "absolute",
-            width: b.w,
-            height: b.h,
-            left: b.left,
-            top: b.top,
-            marginLeft: -b.w / 2, // Centraliza melhor
-            marginTop: -b.h / 2,
+            width: b.w, height: b.h,
+            left: b.left, top: b.top,
+            marginLeft: -b.w / 2, marginTop: -b.h / 2,
             borderRadius: "50%",
             background: `radial-gradient(circle at 40% 40%, ${b.color} 0%, ${b.colorMid} 45%, transparent 72%)`,
             filter: `blur(${b.blur}px)`,
             willChange: "transform",
             animation: `bd${i % 3} ${b.dur}s ease-in-out ${b.delay}s infinite alternate`,
-            transform: "translate3d(0, 0, 0)", // Força aceleração GPU
+            transform: "translate3d(0, 0, 0)",
           }}
         />
       ))}
@@ -116,7 +52,6 @@ const LiquidBlobs = memo(function LiquidBlobs() {
   );
 });
 
-// ─── HERO ─────────────────────────────────────────────────────────────────────
 export function Hero() {
   const handleEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = e.currentTarget;
@@ -125,7 +60,6 @@ export function Hero() {
     el.style.boxShadow = "0 0 20px rgba(255,120,0,0.15), inset 0 0 20px rgba(255,120,0,0.05)";
     el.style.transform = "translateY(-2px)";
   };
-
   const handleLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = e.currentTarget;
     el.style.borderColor = "rgba(255,120,0,0.3)";
@@ -133,14 +67,12 @@ export function Hero() {
     el.style.boxShadow = "none";
     el.style.transform = "translateY(0)";
   };
-
   const handleEnterGradient = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = e.currentTarget;
     el.style.boxShadow = "0 0 48px rgba(255,107,0,0.55), 0 4px 32px rgba(255,107,0,0.40)";
     el.style.transform = "translateY(-2px)";
     el.style.filter = "brightness(1.1)";
   };
-
   const handleLeaveGradient = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const el = e.currentTarget;
     el.style.boxShadow = "0 0 32px rgba(255,107,0,0.35), 0 4px 24px rgba(255,107,0,0.25)";
@@ -158,78 +90,44 @@ export function Hero() {
         position: "relative",
         overflow: "hidden",
         paddingTop: 64,
-        background:
-          "radial-gradient(ellipse 120% 80% at 70% 60%, #0f0a04 0%, #080808 60%, #060608 100%)",
+        background: "radial-gradient(ellipse 120% 80% at 70% 60%, #0f0a04 0%, #080808 60%, #060608 100%)",
       }}
     >
-      {/* Grid overlay */}
       <div
         style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: `
-            linear-gradient(rgba(255,120,0,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,120,0,0.03) 1px, transparent 1px)
-          `,
+          position: "absolute", inset: 0,
+          backgroundImage: `linear-gradient(rgba(255,120,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,120,0,0.03) 1px, transparent 1px)`,
           backgroundSize: "48px 48px",
-          zIndex: 0,
-          pointerEvents: "none",
+          zIndex: 0, pointerEvents: "none",
         }}
       />
-
-      {/* Liquid blobs — CSS only, GPU accelerated */}
       <LiquidBlobs />
-
-      {/* Scan line */}
       <div className="scanline" style={{ zIndex: 1, pointerEvents: "none" }} />
-
-      {/* Vignette */}
       <div
         style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(4,3,2,0.72) 100%)",
-          pointerEvents: "none",
-          zIndex: 1,
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(4,3,2,0.72) 100%)",
+          pointerEvents: "none", zIndex: 1,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse 55% 50% at 30% 55%, rgba(255,100,0,0.04) 0%, transparent 70%)",
+          pointerEvents: "none", zIndex: 1,
         }}
       />
 
-      {/* Brilho central sutil */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "radial-gradient(ellipse 55% 50% at 30% 55%, rgba(255,100,0,0.04) 0%, transparent 70%)",
-          pointerEvents: "none",
-          zIndex: 1,
-        }}
-      />
-
-      {/* Content */}
       <div className="container" style={{ position: "relative", zIndex: 2 }}>
         <div style={{ maxWidth: 860 }}>
           {/* Label */}
-          <div
-            className="fade-up"
-            style={{ marginBottom: 22, display: "flex", alignItems: "center", gap: 12 }}
-          >
-            <div
-              style={{
-                width: 36,
-                height: 1,
-                background: "linear-gradient(90deg, #ff7a00, transparent)",
-              }}
-            />
+          <div className="fade-up" style={{ marginBottom: 22, display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 36, height: 1, background: "linear-gradient(90deg, #ff7a00, transparent)", flexShrink: 0 }} />
             <span
               style={{
-                color: "#ff7a00",
-                fontFamily: "monospace",
-                fontSize: 12,
-                letterSpacing: "0.16em",
-                textTransform: "uppercase",
-                fontWeight: 500,
+                color: "#ff7a00", fontFamily: "monospace",
+                fontSize: "clamp(10px, 2.5vw, 12px)",
+                letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 500,
               }}
             >
               Dev Full Stack & IA Aplicada
@@ -241,16 +139,12 @@ export function Hero() {
             className="fade-up delay-1"
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: "clamp(56px, 9vw, 108px)",
-              lineHeight: 0.92,
-              letterSpacing: "0.01em",
-              marginBottom: 30,
-              color: "var(--text)",
+              fontSize: "clamp(42px, 9vw, 108px)",
+              lineHeight: 0.92, letterSpacing: "0.01em",
+              marginBottom: 30, color: "var(--text)",
             }}
           >
-            <span style={{ display: "block", color: "#f0ece6" }}>
-              CRIO SISTEMAS
-            </span>
+            <span style={{ display: "block", color: "#f0ece6" }}>CRIO SISTEMAS</span>
             <span
               style={{
                 display: "block",
@@ -269,12 +163,10 @@ export function Hero() {
           <p
             className="fade-up delay-2"
             style={{
-              fontSize: 18,
+              fontSize: "clamp(15px, 3.5vw, 18px)",
               color: "rgba(220,200,180,0.6)",
-              maxWidth: 540,
-              lineHeight: 1.75,
-              marginBottom: 44,
-              fontWeight: 300,
+              maxWidth: 540, lineHeight: 1.75,
+              marginBottom: 44, fontWeight: 300,
             }}
           >
             Desenvolvimento de sistemas web, agentes inteligentes e automações que resolvem{" "}
@@ -283,11 +175,8 @@ export function Hero() {
             </span>
           </p>
 
-          {/* CTAs - CORRIGIDO! */}
-          <div
-            className="fade-up delay-3"
-            style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 0 }}
-          >
+          {/* CTAs */}
+          <div className="fade-up delay-3" style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 0 }}>
             <a
               href="#fullstack"
               className="btn"
@@ -304,7 +193,6 @@ export function Hero() {
               <Icon name="code2" size={16} />
               Full Stack Dev
             </a>
-
             <a
               href="#ia"
               className="btn"
@@ -330,7 +218,7 @@ export function Hero() {
             style={{
               marginTop: 68,
               display: "flex",
-              gap: 40,
+              gap: "clamp(20px, 5vw, 40px)",
               flexWrap: "wrap",
               borderTop: "1px solid rgba(255,120,0,0.12)",
               paddingTop: 30,
@@ -342,7 +230,7 @@ export function Hero() {
                 <div
                   style={{
                     fontFamily: "var(--font-display)",
-                    fontSize: 34,
+                    fontSize: "clamp(26px, 5vw, 34px)",
                     lineHeight: 1,
                     background: "linear-gradient(135deg, #ff7a00, #ffb340)",
                     WebkitBackgroundClip: "text",
@@ -354,7 +242,7 @@ export function Hero() {
                 </div>
                 <div
                   style={{
-                    fontSize: 11,
+                    fontSize: "clamp(9px, 2vw, 11px)",
                     color: "rgba(200,160,100,0.6)",
                     marginTop: 5,
                     textTransform: "uppercase",
@@ -367,25 +255,18 @@ export function Hero() {
             ))}
 
             {/* Available badge */}
-            <div
-              style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}
-            >
+            <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
               <div
                 className="pulse"
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: "#22c55e",
-                  boxShadow: "0 0 8px #22c55e",
-                }}
+                style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 8px #22c55e", flexShrink: 0 }}
               />
               <span
                 style={{
-                  fontSize: 11,
+                  fontSize: "clamp(9px, 2vw, 11px)",
                   color: "rgba(200,160,100,0.6)",
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
+                  whiteSpace: "nowrap",
                 }}
               >
                 Disponível para projetos

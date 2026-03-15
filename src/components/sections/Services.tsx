@@ -1,9 +1,8 @@
 import { Icon } from "../ui/Icon";
-import type { IconName } from "../../types"; // Importe o tipo IconName do local correto
+import type { IconName } from "../../types";
 
-// Defina o tipo para cada serviço
 interface Service {
-  icon: IconName; // Agora icon só pode receber valores válidos do tipo IconName
+  icon: IconName;
   label: string;
   problem: string;
   desc: string;
@@ -41,11 +40,11 @@ export function Services() {
         <div style={{ marginBottom: 56 }}>
           <p
             style={{
-              color: "var(--cyan)", 
+              color: "var(--cyan)",
               fontFamily: "monospace",
-              fontSize: 12, 
+              fontSize: 12,
               letterSpacing: "0.14em",
-              textTransform: "uppercase", 
+              textTransform: "uppercase",
               marginBottom: 12,
             }}
           >
@@ -62,12 +61,18 @@ export function Services() {
             <br />
             <span style={{ color: "var(--cyan)" }}>UM OBJETIVO</span>
           </h2>
-          <p style={{ color: "var(--muted)", maxWidth: 480, marginTop: 14, fontWeight: 300 }}>
+          <p style={{ color: "var(--muted)", maxWidth: 480, marginTop: 14, fontWeight: 300, fontSize: "clamp(14px, 3.5vw, 16px)" }}>
             Não trabalho com hype. Trabalho com sistemas que entregam resultado — em produção, com dados reais.
           </p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 2 }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: 2,
+          }}
+        >
           {SERVICES.map((s, i) => (
             <div
               key={s.label}
@@ -75,22 +80,21 @@ export function Services() {
               style={{
                 background: "var(--surface)",
                 border: "1px solid var(--border)",
-                padding: "36px 32px",
-                borderRadius:
-                  i === 0 ? "10px 0 0 10px" : i === 2 ? "0 10px 10px 0" : "0",
+                padding: "clamp(24px, 5vw, 36px) clamp(20px, 4vw, 32px)",
+                borderRadius: 10,
                 position: "relative",
                 overflow: "hidden",
               }}
             >
               <div
                 style={{
-                  position: "absolute", 
-                  top: 20, 
+                  position: "absolute",
+                  top: 20,
                   right: 24,
-                  fontFamily: "var(--font-display)", 
-                  fontSize: 64,
-                  color: "rgba(0,229,200,0.05)", 
-                  lineHeight: 1, 
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(48px, 8vw, 64px)",
+                  color: "rgba(0,229,200,0.05)",
+                  lineHeight: 1,
                   userSelect: "none",
                 }}
               >
@@ -99,19 +103,21 @@ export function Services() {
               <div style={{ color: "var(--cyan)", marginBottom: 16 }}>
                 <Icon name={s.icon} size={28} />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 600, marginBottom: 10 }}>{s.label}</h3>
+              <h3 style={{ fontSize: "clamp(16px, 3.5vw, 18px)", fontWeight: 600, marginBottom: 10 }}>
+                {s.label}
+              </h3>
               <p
                 style={{
-                  fontSize: 13, 
+                  fontSize: "clamp(12px, 3vw, 13px)",
                   color: "var(--cyan)",
-                  fontStyle: "italic", 
-                  marginBottom: 12, 
+                  fontStyle: "italic",
+                  marginBottom: 12,
                   fontWeight: 300,
                 }}
               >
                 {s.problem}
               </p>
-              <p style={{ fontSize: 14, color: "var(--muted)", lineHeight: 1.65, marginBottom: 20 }}>
+              <p style={{ fontSize: "clamp(13px, 3vw, 14px)", color: "var(--muted)", lineHeight: 1.65, marginBottom: 20 }}>
                 {s.desc}
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>

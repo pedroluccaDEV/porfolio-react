@@ -1,3 +1,4 @@
+// TypedText.tsx — sem mudanças necessárias, já é responsivo por natureza
 import { useState, useEffect } from "react";
 
 interface TypedTextProps {
@@ -24,7 +25,6 @@ export function TypedText({ text, speed = 75 }: TypedTextProps) {
       <span
         className="cursor"
         style={{
-          // Neon orange cursor — matches headline gradient end tone
           color: "#ffb340",
           filter: "drop-shadow(0 0 6px rgba(255,179,64,0.8))",
         }}
