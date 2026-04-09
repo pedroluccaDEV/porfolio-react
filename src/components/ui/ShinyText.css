@@ -1,0 +1,36 @@
+.shiny-text {
+  background: linear-gradient(
+    120deg,
+    #ff6b00 0%,
+    #ff6b00 30%,
+    rgba(255, 230, 160, 0.95) 45%,
+    rgba(255, 255, 220, 1) 50%,
+    rgba(255, 230, 160, 0.95) 55%,
+    #ff9d00 70%,
+    #ffb340 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shinyMove var(--shiny-duration, 5s) linear infinite;
+  filter: drop-shadow(0 0 28px rgba(255, 107, 0, 0.5));
+}
+
+.shiny-text.disabled {
+  animation: none;
+  background: linear-gradient(90deg, #ff6b00 0%, #ff9d00 50%, #ffb340 100%);
+  background-size: 100% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes shinyMove {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -100% center;
+  }
+}

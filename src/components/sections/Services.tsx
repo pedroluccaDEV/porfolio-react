@@ -35,8 +35,61 @@ const SERVICES: Service[] = [
 
 export function Services() {
   return (
-    <section className="section" id="servicos">
-      <div className="container">
+    <section
+      className="section"
+      id="servicos"
+      style={{ position: "relative", overflow: "hidden" }}
+    >
+      {/* ── Transição suave vindo do Hero ── */}
+
+      {/* Fade escuro desce do topo */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "180px",
+          background:
+            "linear-gradient(to bottom, rgba(8,4,1,0.98) 0%, rgba(8,4,1,0.6) 50%, transparent 100%)",
+          pointerEvents: "none",
+          zIndex: 2,
+        }}
+      />
+
+      {/* Linha fina laranja — eco visual das floating lines do hero */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "70%",
+          height: "1px",
+          background:
+            "linear-gradient(90deg, transparent, rgba(255,107,0,0.3), rgba(254,140,1,0.55), rgba(255,107,0,0.3), transparent)",
+          pointerEvents: "none",
+          zIndex: 3,
+        }}
+      />
+
+      {/* Halo laranja difuso sangrando do topo */}
+      <div
+        style={{
+          position: "absolute",
+          top: "-80px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "65%",
+          height: "200px",
+          background:
+            "radial-gradient(ellipse 80% 100% at 50% 0%, rgba(255,107,0,0.07) 0%, transparent 70%)",
+          pointerEvents: "none",
+          zIndex: 2,
+        }}
+      />
+
+      <div className="container" style={{ position: "relative", zIndex: 4 }}>
         <div style={{ marginBottom: 56 }}>
           <p
             style={{
@@ -61,7 +114,15 @@ export function Services() {
             <br />
             <span style={{ color: "var(--cyan)" }}>UM OBJETIVO</span>
           </h2>
-          <p style={{ color: "var(--muted)", maxWidth: 480, marginTop: 14, fontWeight: 300, fontSize: "clamp(14px, 3.5vw, 16px)" }}>
+          <p
+            style={{
+              color: "var(--muted)",
+              maxWidth: 480,
+              marginTop: 14,
+              fontWeight: 300,
+              fontSize: "clamp(14px, 3.5vw, 16px)",
+            }}
+          >
             Não trabalho com hype. Trabalho com sistemas que entregam resultado — em produção, com dados reais.
           </p>
         </div>
@@ -103,7 +164,13 @@ export function Services() {
               <div style={{ color: "var(--cyan)", marginBottom: 16 }}>
                 <Icon name={s.icon} size={28} />
               </div>
-              <h3 style={{ fontSize: "clamp(16px, 3.5vw, 18px)", fontWeight: 600, marginBottom: 10 }}>
+              <h3
+                style={{
+                  fontSize: "clamp(16px, 3.5vw, 18px)",
+                  fontWeight: 600,
+                  marginBottom: 10,
+                }}
+              >
                 {s.label}
               </h3>
               <p
@@ -117,12 +184,21 @@ export function Services() {
               >
                 {s.problem}
               </p>
-              <p style={{ fontSize: "clamp(13px, 3vw, 14px)", color: "var(--muted)", lineHeight: 1.65, marginBottom: 20 }}>
+              <p
+                style={{
+                  fontSize: "clamp(13px, 3vw, 14px)",
+                  color: "var(--muted)",
+                  lineHeight: 1.65,
+                  marginBottom: 20,
+                }}
+              >
                 {s.desc}
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {s.chips.map((c) => (
-                  <span key={c} className="chip">{c}</span>
+                  <span key={c} className="chip">
+                    {c}
+                  </span>
                 ))}
               </div>
             </div>
