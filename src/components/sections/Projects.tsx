@@ -4,7 +4,7 @@ import { PROJECTS, TYPE_COLORS } from "../../constants/projects/projects";
 import type { Project } from "../../types";
 import nubankVideo from "../../assets/gif-nubank.mp4";
 import saphienVideo from "../../assets/saphien-landing.mp4";
-import awsDocs from "../../constants/projects/EC2-AutoScaling-LoadBalancer/README.md?raw";
+import crmAiVideo from "../../assets/crm-ai.mp4";
 
 // ─── HOOK: MEDIA QUERY ────────────────────────────────────────────────────────
 function useIsMobile(breakpoint = 768) {
@@ -23,8 +23,43 @@ function useIsMobile(breakpoint = 768) {
   return isMobile;
 }
 
+// ─── FUNÇÃO PARA CARREGAR E PROCESSAR MARKDOWN ────────────────────────────────
+async function loadAndProcessMarkdown(projectPath: string): Promise<string> {
+  try {
+    // Carrega o README.md
+    const readmeModule = await import(`../../constants/projects/${projectPath}/README.md?raw`);
+    let content = readmeModule.default;
+    
+    // Processa as imagens com caminhos relativos
+    // Substitui ![](img/nome.jpg) por caminho absoluto
+    content = content.replace(/!\[(.*?)\]\((.*?)\)/g, (_match: string, alt: string, imgPath: string) => {
+      // Converte caminho relativo para absoluto
+      const absolutePath = `/src/constants/projects/${projectPath}/${imgPath}`;
+      return `<img src="${absolutePath}" alt="${alt}" style="max-width:100%; border-radius:8px; margin:16px 0;" />`;
+    });
+    
+    return content;
+  } catch (error) {
+    console.error(`Erro ao carregar markdown para ${projectPath}:`, error);
+    return "Documentação não encontrada.";
+  }
+}
+
 // ─── DOCS MODAL ───────────────────────────────────────────────────────────────
-function DocsModal({ isOpen, onClose, content }: { isOpen: boolean; onClose: () => void; content: string }) {
+function DocsModal({ isOpen, onClose, projectPath }: { isOpen: boolean; onClose: () => void; projectPath?: string }) {
+  const [content, setContent] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && projectPath) {
+      setLoading(true);
+      loadAndProcessMarkdown(projectPath).then(markdown => {
+        setContent(markdown);
+        setLoading(false);
+      });
+    }
+  }, [isOpen, projectPath]);
+
   if (!isOpen) return null;
 
   const renderMarkdown = (text: string) =>
@@ -35,7 +70,10 @@ function DocsModal({ isOpen, onClose, content }: { isOpen: boolean; onClose: () 
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
       .replace(/`(.*?)`/g, '<code style="background:rgba(255,150,0,0.1);padding:2px 4px;border-radius:4px;">$1</code>')
-      .replace(/- (.*$)/gm, '<li style="margin-left:20px;">• $1</li>')
+      .replace(/^- (.*$)/gm, '<li style="margin-left:20px; margin-bottom:8px;">• $1</li>')
+      .replace(/```(\w*)\n([\s\S]*?)```/g, (_: string, __: string, code: string) => 
+        `<pre style="background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; overflow-x:auto; margin:16px 0;"><code style="font-family:monospace; font-size:13px;">${code.trim()}</code></pre>`
+      )
       .replace(/\n\n/g, "<br/><br/>")
       .replace(/\n/g, "<br/>");
 
@@ -73,7 +111,7 @@ function DocsModal({ isOpen, onClose, content }: { isOpen: boolean; onClose: () 
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <Icon name="fileText" size={18} color="#ff9d00" />
             <span style={{ fontWeight: 600, color: "var(--text)", fontSize: "clamp(13px, 3vw, 15px)" }}>
-              Documentação Técnica — AWS Infrastructure
+              Documentação Técnica
             </span>
           </div>
           <button
@@ -88,8 +126,17 @@ function DocsModal({ isOpen, onClose, content }: { isOpen: boolean; onClose: () 
         </div>
         <div
           style={{ padding: "20px clamp(16px,4vw,32px)", overflowY: "auto", color: "var(--text)", lineHeight: 1.6, fontSize: 14 }}
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
-        />
+        >
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <div style={{ display: "inline-block", width: 30, height: 30, border: "2px solid #ff9d00", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              <p style={{ marginTop: 16, color: "var(--muted)" }}>Carregando documentação...</p>
+            </div>
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -182,38 +229,77 @@ function ProjectPreview({ project, onOpenDocs }: { project: Project; onOpenDocs?
     );
   }
 
-  // AI CRM
+  // AI CRM - com vídeo
   if (project.title.includes("CRM")) {
     return (
       <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden", background: "#0a0f0a" }}>
         <BrowserChrome accentColor={resolvedColor} />
-        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(145deg, #0a1a12, #050f09)", paddingTop: 32 }}>
-          <div style={{ textAlign: "center", color: "rgba(255,255,255,0.85)", padding: "0 20px" }}>
-            <div style={{ fontSize: 44, marginBottom: 10 }}>🤖</div>
-            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, color: "#4ade80" }}>AI CRM</div>
-            <div style={{ fontSize: 10, opacity: 0.55, lineHeight: 1.5 }}>
-              Agentes Autônomos • Lead Intelligence
-            </div>
-            {/* mini fake UI */}
-            <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 6, width: 180, margin: "16px auto 0" }}>
-              {[
-                { label: "João Silva", status: "🔥 Quente", color: "#4ade80" },
-                { label: "Ana Costa", status: "🧊 Frio", color: "#60a5fa" },
-                { label: "Pedro Luz", status: "⏳ Follow-up", color: "#fbbf24" },
-              ].map((lead) => (
-                <div key={lead.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 6, padding: "5px 10px" }}>
-                  <span style={{ fontSize: 9, color: "rgba(255,255,255,0.7)" }}>{lead.label}</span>
-                  <span style={{ fontSize: 8, color: lead.color, fontWeight: 600 }}>{lead.status}</span>
-                </div>
+        <video ref={videoRef} src={crmAiVideo} autoPlay loop muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        <div style={{ position: "absolute", top: 42, left: 12, background: "rgba(74,222,128,0.15)", backdropFilter: "blur(4px)", padding: "4px 10px", borderRadius: 20, fontSize: 9, fontWeight: 500, color: "#4ade80", border: "1px solid rgba(74,222,128,0.3)", zIndex: 10 }}>
+          ⚡ AGENTES AUTÔNOMOS
+        </div>
+        <div style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", padding: "4px 10px", borderRadius: 20, fontSize: 9, fontWeight: 500, color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.1)", zIndex: 10 }}>
+          EM DESENVOLVIMENTO
+        </div>
+      </div>
+    );
+  }
+
+  // Visão Computacional
+  if (project.title.includes("Vision Analytics")) {
+    return (
+      <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden", background: "#0a0a2a" }}>
+        <BrowserChrome accentColor={resolvedColor} />
+        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(145deg, #0a0a2a, #050515)", paddingTop: 32 }}>
+          <div style={{ textAlign: "center", color: "rgba(255,255,255,0.85)" }}>
+            <div style={{ fontSize: 44, marginBottom: 10 }}>👁️</div>
+            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, color: "#60a5fa" }}>Computer Vision</div>
+            <div style={{ fontSize: 10, opacity: 0.55 }}>YOLOv8 • Real-time Detection</div>
+            <div style={{ marginTop: 16, display: "flex", gap: 8, justifyContent: "center" }}>
+              {[1, 2, 3].map((i) => (
+                <div key={i} style={{ width: 40, height: 40, background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.3)", borderRadius: 8 }} />
               ))}
             </div>
           </div>
         </div>
-        <div style={{ position: "absolute", top: 42, left: 12, background: "rgba(74,222,128,0.15)", backdropFilter: "blur(4px)", padding: "4px 10px", borderRadius: 20, fontSize: 9, fontWeight: 500, color: "#4ade80", border: "1px solid rgba(74,222,128,0.3)", zIndex: 10 }}>
-          ⚡ AGENTES ATIVOS
+        <button
+          onClick={onOpenDocs}
+          style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(96,165,250,0.9)", backdropFilter: "blur(4px)", padding: "6px 12px", borderRadius: 20, fontSize: 10, fontWeight: 600, color: "#fff", border: "none", zIndex: 10, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+        >
+          <Icon name="fileText" size={12} /> DOCUMENTAÇÃO
+        </button>
+        <div style={{ position: "absolute", top: 42, left: 12, background: "rgba(96,165,250,0.15)", backdropFilter: "blur(4px)", padding: "4px 10px", borderRadius: 20, fontSize: 9, fontWeight: 500, color: "#60a5fa", border: "1px solid rgba(96,165,250,0.3)", zIndex: 10 }}>
+          🎯 DETECÇÃO EM TEMPO REAL
         </div>
-        <div style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)", padding: "4px 10px", borderRadius: 20, fontSize: 9, fontWeight: 500, color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.1)", zIndex: 10 }}>
-          EM DESENVOLVIMENTO
+      </div>
+    );
+  }
+
+  // Machine Learning
+  if (project.title.includes("ML Predict")) {
+    return (
+      <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden", background: "#1a0a2a" }}>
+        <BrowserChrome accentColor={resolvedColor} />
+        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(145deg, #1a0a2a, #0a0515)", paddingTop: 32 }}>
+          <div style={{ textAlign: "center", color: "rgba(255,255,255,0.85)" }}>
+            <div style={{ fontSize: 44, marginBottom: 10 }}>📊</div>
+            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, color: "#c084fc" }}>Machine Learning</div>
+            <div style={{ fontSize: 10, opacity: 0.55 }}>XGBoost • Time Series</div>
+            <div style={{ marginTop: 16, display: "flex", gap: 8, justifyContent: "center" }}>
+              {[1, 2, 3].map((i) => (
+                <div key={i} style={{ width: 30, height: 30, background: "rgba(192,132,252,0.1)", border: "1px solid rgba(192,132,252,0.3)", borderRadius: "50%" }} />
+              ))}
+            </div>
+          </div>
+        </div>
+        <button
+          onClick={onOpenDocs}
+          style={{ position: "absolute", bottom: 12, right: 12, background: "rgba(192,132,252,0.9)", backdropFilter: "blur(4px)", padding: "6px 12px", borderRadius: 20, fontSize: 10, fontWeight: 600, color: "#fff", border: "none", zIndex: 10, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}
+        >
+          <Icon name="fileText" size={12} /> DOCUMENTAÇÃO
+        </button>
+        <div style={{ position: "absolute", top: 42, left: 12, background: "rgba(192,132,252,0.15)", backdropFilter: "blur(4px)", padding: "4px 10px", borderRadius: 20, fontSize: 9, fontWeight: 500, color: "#c084fc", border: "1px solid rgba(192,132,252,0.3)", zIndex: 10 }}>
+          🤖 PREVISÃO INTELIGENTE
         </div>
       </div>
     );
@@ -349,7 +435,7 @@ function MobileGallery({
               >
                 <ProjectPreview
                   project={p}
-                  onOpenDocs={p.title.includes("Load Balancer") || p.title.includes("Auto Scaling") ? handleOpenDocs : undefined}
+                  onOpenDocs={p.hasDocs ? handleOpenDocs : undefined}
                 />
               </div>
             </div>
@@ -509,6 +595,7 @@ function InfoPanel({
 export function Projects() {
   const [active, setActive] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentDocsPath, setCurrentDocsPath] = useState<string | undefined>();
   const isMobile = useIsMobile(768);
   const total = PROJECTS.length;
 
@@ -519,8 +606,16 @@ export function Projects() {
   const color = TYPE_COLORS[current.type];
   const resolvedColor = color.startsWith("var") ? "#ff9d00" : color;
 
-  const handleOpenDocs = () => setIsModalOpen(true);
-  const handleCloseDocs = () => setIsModalOpen(false);
+  const handleOpenDocs = () => {
+    if (current.hasDocs && current.docsPath) {
+      setCurrentDocsPath(current.docsPath);
+      setIsModalOpen(true);
+    }
+  };
+  const handleCloseDocs = () => {
+    setIsModalOpen(false);
+    setCurrentDocsPath(undefined);
+  };
 
   const handleCTAClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -530,6 +625,8 @@ export function Projects() {
       handleOpenDocs();
     } else if (current.title.includes("Saphien")) {
       window.open("https://landingpage-development.up.railway.app", "_blank", "noopener noreferrer");
+    } else if (current.hasDocs) {
+      handleOpenDocs();
     }
     // CRM: sem link por enquanto (em desenvolvimento)
   };
@@ -586,7 +683,7 @@ export function Projects() {
                     <div style={{ width: "100%", height: "100%", borderRadius: 12, overflow: "hidden", border: `1px solid ${pos === "center" ? `${resolvedColor}45` : "rgba(255,255,255,0.06)"}`, boxShadow: pos === "center" ? `0 0 60px ${resolvedColor}30, 0 24px 64px rgba(0,0,0,0.6)` : "0 8px 32px rgba(0,0,0,0.4)", background: "var(--surface)", position: "relative", transition: "border-color 0.5s ease, box-shadow 0.5s ease" }}>
                       <ProjectPreview
                         project={p}
-                        onOpenDocs={p.title.includes("Load Balancer") || p.title.includes("Auto Scaling") ? handleOpenDocs : undefined}
+                        onOpenDocs={p.hasDocs ? handleOpenDocs : undefined}
                       />
                     </div>
                   </div>
@@ -622,7 +719,7 @@ export function Projects() {
         />
       </div>
 
-      <DocsModal isOpen={isModalOpen} onClose={handleCloseDocs} content={awsDocs} />
+      <DocsModal isOpen={isModalOpen} onClose={handleCloseDocs} projectPath={currentDocsPath} />
     </section>
   );
 }

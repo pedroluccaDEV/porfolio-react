@@ -43,6 +43,8 @@ export interface Project {
   desc: string;
   stack: string[];
   type: "enterprise" | "ia" | "automacao";
+  hasDocs?: boolean;
+  docsPath?: string;
 }
 
 export interface ContactItem {
