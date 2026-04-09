@@ -2,9 +2,9 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { Icon } from "../ui/Icon";
 import { PROJECTS, TYPE_COLORS } from "../../constants/projects/projects";
 import type { Project } from "../../types";
-import nubankVideo from "../../assets/gif-nubank.mp4";
-import saphienVideo from "../../assets/saphien-landing.mp4";
-import crmAiVideo from "../../assets/crm-ai.mp4";
+const nubankVideo = "../../assets/gif-nubank.mp4";
+const saphienVideo = "/saphien-landing.mp4";
+const crmAiVideo = "/crm-ai.mp4"
 
 // ─── HOOK: MEDIA QUERY ────────────────────────────────────────────────────────
 function useIsMobile(breakpoint = 768) {
